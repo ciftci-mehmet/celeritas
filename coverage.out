@@ -21,3 +21,15 @@ github.com/ciftci-mehmet/celeritas/render/render.go:84.16,87.3 2 1
 github.com/ciftci-mehmet/celeritas/render/render.go:89.2,89.46 1 1
 github.com/ciftci-mehmet/celeritas/render/render.go:89.46,92.3 2 0
 github.com/ciftci-mehmet/celeritas/render/render.go:94.2,94.12 1 1
+github.com/ciftci-mehmet/celeritas/session/session.go:21.53,26.16 3 1
+github.com/ciftci-mehmet/celeritas/session/session.go:26.16,28.3 1 0
+github.com/ciftci-mehmet/celeritas/session/session.go:31.2,31.48 1 1
+github.com/ciftci-mehmet/celeritas/session/session.go:31.48,33.3 1 1
+github.com/ciftci-mehmet/celeritas/session/session.go:36.2,36.47 1 1
+github.com/ciftci-mehmet/celeritas/session/session.go:36.47,38.3 1 0
+github.com/ciftci-mehmet/celeritas/session/session.go:41.2,50.40 8 1
+github.com/ciftci-mehmet/celeritas/session/session.go:51.15,51.15 0 0
+github.com/ciftci-mehmet/celeritas/session/session.go:53.26,53.26 0 0
+github.com/ciftci-mehmet/celeritas/session/session.go:55.32,55.32 0 0
+github.com/ciftci-mehmet/celeritas/session/session.go:57.10,57.10 0 1
+github.com/ciftci-mehmet/celeritas/session/session.go:61.2,61.16 1 1
