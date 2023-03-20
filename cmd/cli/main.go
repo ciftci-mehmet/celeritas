@@ -85,7 +85,7 @@ func exitGracefully(err error, msg ...string) {
 		color.Red("Error: %v\n", err)
 	}
 
-	if len(msg) > 0 {
+	if len(message) > 0 {
 		color.Yellow(message)
 	} else {
 		color.Green("Finished!")
