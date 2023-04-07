@@ -19,18 +19,19 @@ import (
 const version = "1.0.0"
 
 type Celeritas struct {
-	AppName  string
-	Debug    bool
-	Version  string
-	ErrorLog *log.Logger
-	InfoLog  *log.Logger
-	RootPath string
-	Routes   *chi.Mux
-	Render   *render.Render
-	Session  *scs.SessionManager
-	DB       Database
-	JetViews *jet.Set
-	config   config
+	AppName       string
+	Debug         bool
+	Version       string
+	ErrorLog      *log.Logger
+	InfoLog       *log.Logger
+	RootPath      string
+	Routes        *chi.Mux
+	Render        *render.Render
+	Session       *scs.SessionManager
+	DB            Database
+	JetViews      *jet.Set
+	config        config
+	EncryptionKey string
 }
 
 type config struct {
@@ -116,6 +117,8 @@ func (c *Celeritas) New(rootPath string) error {
 
 	c.Session = sess.InitSession()
 
+	c.EncryptionKey = os.Getenv("KEY")
+
 	var views = jet.NewSet(
 		jet.NewOSFileSystemLoader(fmt.Sprintf("%s/views", rootPath)),
 		jet.InDevelopmentMode(),
@@ -131,7 +134,7 @@ func (c *Celeritas) New(rootPath string) error {
 func (c *Celeritas) Init(p initPaths) error {
 	root := p.rootPath
 	for _, path := range p.folderNames {
-		// create folder if it doesnt exist
+		// create folder if it doesn't exist
 		err := c.CreateDirIfNotExist(root + "/" + path)
 		if err != nil {
 			return err
@@ -140,7 +143,7 @@ func (c *Celeritas) Init(p initPaths) error {
 	return nil
 }
 
-// ListenAndServer starts the web server
+// ListenAndServe starts the web server
 func (c *Celeritas) ListenAndServe() {
 	srv := &http.Server{
 		Addr:         fmt.Sprintf(":%s", os.Getenv("PORT")),
