@@ -4,8 +4,9 @@ import (
 	"errors"
 	"os"
 
-	"github.com/ciftci-mehmet/celeritas"
 	"github.com/fatih/color"
+
+	"github.com/ciftci-mehmet/celeritas"
 )
 
 const version = "1.0.0"
