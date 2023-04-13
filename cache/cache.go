@@ -37,30 +37,6 @@ func (c *RedisCache) Has(str string) (bool, error) {
 	return ok, nil
 }
 
-func encode(item Entry) ([]byte, error) {
-	b := bytes.Buffer{}
-	e := gob.NewEncoder(&b)
-	err := e.Encode(item)
-	if err != nil {
-		return nil, err
-	}
-
-	return b.Bytes(), nil
-}
-
-func decode(str string) (Entry, error) {
-	item := Entry{}
-	b := bytes.Buffer{}
-	b.Write([]byte(str))
-	d := gob.NewDecoder(&b)
-	err := d.Decode(&item)
-	if err != nil {
-		return nil, err
-	}
-
-	return item, nil
-}
-
 func (c *RedisCache) Get(str string) (interface{}, error) {
 	key := fmt.Sprintf("%s:%s", c.Prefix, str)
 	conn := c.Conn.Get()
@@ -184,4 +160,28 @@ func (c *RedisCache) getKeys(pattern string) ([]string, error) {
 	}
 
 	return keys, nil
+}
+
+func encode(item Entry) ([]byte, error) {
+	b := bytes.Buffer{}
+	e := gob.NewEncoder(&b)
+	err := e.Encode(item)
+	if err != nil {
+		return nil, err
+	}
+
+	return b.Bytes(), nil
+}
+
+func decode(str string) (Entry, error) {
+	item := Entry{}
+	b := bytes.Buffer{}
+	b.Write([]byte(str))
+	d := gob.NewDecoder(&b)
+	err := d.Decode(&item)
+	if err != nil {
+		return nil, err
+	}
+
+	return item, nil
 }
