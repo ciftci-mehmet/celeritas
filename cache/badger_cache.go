@@ -1,8 +1,9 @@
 package cache
 
 import (
-	"github.com/dgraph-io/badger/v3"
 	"time"
+
+	"github.com/dgraph-io/badger/v3"
 )
 
 type BadgerCache struct {
