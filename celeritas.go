@@ -8,6 +8,9 @@ import (
 	"strconv"
 	"time"
 
+	"github.com/dgraph-io/badger/v3"
+	"github.com/robfig/cron/v3"
+
 	"github.com/ciftci-mehmet/celeritas/cache"
 	"github.com/ciftci-mehmet/celeritas/render"
 	"github.com/ciftci-mehmet/celeritas/session"
@@ -22,6 +25,9 @@ import (
 const version = "1.0.0"
 
 var myRedisCache *cache.RedisCache
+var myBadgerCache *cache.BadgerCache
+var redisPool *redis.Pool
+var badgerConn *badger.DB
 
 type Celeritas struct {
 	AppName       string
@@ -38,6 +44,7 @@ type Celeritas struct {
 	config        config
 	EncryptionKey string
 	Cache         cache.Cache
+	Scheduler     *cron.Cron
 }
 
 type config struct {
@@ -88,9 +95,28 @@ func (c *Celeritas) New(rootPath string) error {
 		}
 	}
 
+	// set up scheduler
+	scheduler := cron.New()
+	c.Scheduler = scheduler
+
+	// set up cache
 	if os.Getenv("CACHE") == "redis" || os.Getenv("SESSION_TYPE") == "redis" {
 		myRedisCache = c.createClientRedisCache()
 		c.Cache = myRedisCache
+		redisPool = myRedisCache.Conn
+	}
+
+	if os.Getenv("CACHE") == "badger" {
+		myBadgerCache = c.createClientBadgerCache()
+		c.Cache = myBadgerCache
+		badgerConn = myBadgerCache.Conn
+
+		_, err = c.Scheduler.AddFunc("@daily", func() {
+			_ = myBadgerCache.Conn.RunValueLogGC(0.7)
+		})
+		if err != nil {
+			return err
+		}
 	}
 
 	c.InfoLog = infoLog
@@ -183,7 +209,18 @@ func (c *Celeritas) ListenAndServe() {
 		WriteTimeout: 600 * time.Second,
 	}
 
-	defer c.DB.Pool.Close()
+	// defer closing connections
+	if c.DB.Pool != nil {
+		defer c.DB.Pool.Close()
+	}
+
+	if redisPool != nil {
+		defer redisPool.Close()
+	}
+
+	if badgerConn != nil {
+		defer badgerConn.Close()
+	}
 
 	c.InfoLog.Printf("Listening on port %s", os.Getenv("PORT"))
 	err := srv.ListenAndServe()
@@ -217,6 +254,21 @@ func (c *Celeritas) createRenderer() {
 		Session:  c.Session,
 	}
 	c.Render = &myRenderer
+}
+
+func (c *Celeritas) createClientBadgerCache() *cache.BadgerCache {
+	cacheClient := cache.BadgerCache{
+		Conn: c.createBadgerConn(),
+	}
+	return &cacheClient
+}
+
+func (c *Celeritas) createBadgerConn() *badger.DB {
+	db, err := badger.Open(badger.DefaultOptions(c.RootPath + "/tmp/badger"))
+	if err != nil {
+		return nil
+	}
+	return db
 }
 
 func (c *Celeritas) createClientRedisCache() *cache.RedisCache {
