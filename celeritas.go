@@ -12,6 +12,7 @@ import (
 	"github.com/robfig/cron/v3"
 
 	"github.com/ciftci-mehmet/celeritas/cache"
+	"github.com/ciftci-mehmet/celeritas/mailer"
 	"github.com/ciftci-mehmet/celeritas/render"
 	"github.com/ciftci-mehmet/celeritas/session"
 
@@ -45,6 +46,7 @@ type Celeritas struct {
 	EncryptionKey string
 	Cache         cache.Cache
 	Scheduler     *cron.Cron
+	Mail          mailer.Mail
 }
 
 type config struct {
@@ -59,7 +61,7 @@ type config struct {
 func (c *Celeritas) New(rootPath string) error {
 	pathConfig := initPaths{
 		rootPath:    rootPath,
-		folderNames: []string{"handlers", "migrations", "views", "data", "public", "tmp", "logs", "middleware"},
+		folderNames: []string{"handlers", "migrations", "views", "mail", "data", "public", "tmp", "logs", "middleware"},
 	}
 
 	err := c.Init(pathConfig)
@@ -124,6 +126,7 @@ func (c *Celeritas) New(rootPath string) error {
 	c.Debug, _ = strconv.ParseBool(os.Getenv("DEBUG"))
 	c.Version = version
 	c.RootPath = rootPath
+	c.Mail = c.createMailer()
 	c.Routes = c.routes().(*chi.Mux)
 
 	c.config = config{
@@ -182,6 +185,8 @@ func (c *Celeritas) New(rootPath string) error {
 	}
 
 	c.createRenderer()
+
+	go c.Mail.ListenForMail()
 
 	return nil
 }
@@ -254,6 +259,28 @@ func (c *Celeritas) createRenderer() {
 		Session:  c.Session,
 	}
 	c.Render = &myRenderer
+}
+
+func (c *Celeritas) createMailer() mailer.Mail {
+	port, _ := strconv.Atoi(os.Getenv("SMTP_PORT"))
+	m := mailer.Mail{
+		Domain:      os.Getenv("MAILER_DOMAIN"),
+		Templates:   c.RootPath + "/mail",
+		Host:        os.Getenv("SMTP_HOST"),
+		Port:        port,
+		Username:    os.Getenv("SMTP_USERNAME"),
+		Password:    os.Getenv("SMTP_PASSWORD"),
+		Encyption:   os.Getenv("SMTP_ENCRYPTION"),
+		FromAddress: os.Getenv("FROM_ADDRESS"),
+		FromName:    os.Getenv("FROM_NAME"),
+		Jobs:        make(chan mailer.Message, 20),
+		Results:     make(chan mailer.Result, 20),
+		API:         os.Getenv("MAILER_API"),
+		APIKey:      os.Getenv("MAILER_KEY"),
+		APIUrl:      os.Getenv("MAILER_URL"),
+	}
+
+	return m
 }
 
 func (c *Celeritas) createClientBadgerCache() *cache.BadgerCache {
