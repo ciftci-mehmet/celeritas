@@ -270,7 +270,7 @@ func (c *Celeritas) createMailer() mailer.Mail {
 		Port:        port,
 		Username:    os.Getenv("SMTP_USERNAME"),
 		Password:    os.Getenv("SMTP_PASSWORD"),
-		Encyption:   os.Getenv("SMTP_ENCRYPTION"),
+		Encryption:  os.Getenv("SMTP_ENCRYPTION"),
 		FromAddress: os.Getenv("FROM_ADDRESS"),
 		FromName:    os.Getenv("FROM_NAME"),
 		Jobs:        make(chan mailer.Message, 20),
