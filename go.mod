@@ -11,10 +11,12 @@ require (
 	github.com/alexedwards/scs/v2 v2.5.1
 	github.com/alicebob/miniredis/v2 v2.30.1
 	github.com/asaskevich/govalidator v0.0.0-20230301143203-a9d515a09cc2
+	github.com/bwmarrin/go-alone v0.0.0-20190806015146-742bb55d1631
 	github.com/dgraph-io/badger/v3 v3.2103.5
 	github.com/fatih/color v1.15.0
 	github.com/gertd/go-pluralize v0.2.1
 	github.com/go-chi/chi/v5 v5.0.8
+	github.com/go-git/go-git/v5 v5.7.0
 	github.com/go-sql-driver/mysql v1.7.0
 	github.com/golang-migrate/migrate/v4 v4.15.2
 	github.com/gomodule/redigo v1.8.9
@@ -40,7 +42,6 @@ require (
 	github.com/acomagu/bufpipe v1.0.4 // indirect
 	github.com/alicebob/gopher-json v0.0.0-20200520072559-a9ecdc9d1d3a // indirect
 	github.com/andybalholm/cascadia v1.1.0 // indirect
-	github.com/bwmarrin/go-alone v0.0.0-20190806015146-742bb55d1631 // indirect
 	github.com/cenkalti/backoff/v4 v4.1.3 // indirect
 	github.com/cespare/xxhash v1.1.0 // indirect
 	github.com/cespare/xxhash/v2 v2.1.2 // indirect
@@ -56,7 +57,6 @@ require (
 	github.com/gabriel-vasile/mimetype v1.4.0 // indirect
 	github.com/go-git/gcfg v1.5.1-0.20230307220236-3a3c6141e376 // indirect
 	github.com/go-git/go-billy/v5 v5.4.1 // indirect
-	github.com/go-git/go-git/v5 v5.7.0 // indirect
 	github.com/gogo/protobuf v1.3.2 // indirect
 	github.com/golang/glog v0.0.0-20160126235308-23def4e6c14b // indirect
 	github.com/golang/groupcache v0.0.0-20210331224755-41bb18bfe9da // indirect
