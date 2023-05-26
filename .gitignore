@@ -2,4 +2,6 @@ vendor/
 .vscode/
 .idea/
 cache/testdata/tmp/badger/
-/tmp/badger
+tmp/badger
+coverage.out
+dist/*

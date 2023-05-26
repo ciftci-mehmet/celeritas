@@ -1,3 +1,1 @@
-# celeritas
-
-make build_cli
+# Celeritas
